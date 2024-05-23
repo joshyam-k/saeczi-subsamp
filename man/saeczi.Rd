@@ -13,7 +13,8 @@ saeczi(
   B = 100L,
   mse_est = FALSE,
   estimand = "means",
-  parallel = FALSE
+  parallel = FALSE,
+  subsamp_prop = NULL
 )
 }
 \arguments{
@@ -33,7 +34,10 @@ saeczi(
 
 \item{estimand}{String. Whether the estimates should be 'totals' or 'means'.}
 
-\item{parallel}{Logical. Should the MSE estimation be computed in parallel}
+\item{parallel}{Logical. Should the MSE estimation be computed in parallel.}
+
+\item{subsamp_prop}{Double. What proportion of rows from each domain_level should be selected from pop_dat in subsampling.
+Subsampling only occurs if subsamp_prop is set by the user.}
 }
 \value{
 An object of class `zi_mod` with defined `print()` and `summary()` methods.

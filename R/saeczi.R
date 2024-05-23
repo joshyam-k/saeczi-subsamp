@@ -8,8 +8,9 @@
 #' @param B Integer. The number of bootstraps to be used in MSE estimation.
 #' @param mse_est Logical. Whether or not MSE estimation should happen.
 #' @param estimand String. Whether the estimates should be 'totals' or 'means'.
-#' @param parallel Logical. Should the MSE estimation be computed in parallel
-#'
+#' @param parallel Logical. Should the MSE estimation be computed in parallel.
+#' @param subsamp_prop Double. What proportion of rows from each domain_level should be selected from pop_dat in subsampling.
+#'  Subsampling only occurs if subsamp_prop is set by the user.
 #' @returns
 #' An object of class `zi_mod` with defined `print()` and `summary()` methods.
 #' The object is structured like a list and contains the following elements:
@@ -38,7 +39,7 @@
 #' @export saeczi
 #' @import stats
 #' @importFrom rlang sym
-#' @importFrom dplyr summarise group_by mutate left_join
+#' @importFrom dplyr summarise group_by mutate left_join ungroup slice_sample
 #' @importFrom progressr progressor with_progress
 #' @importFrom furrr future_map furrr_options future_map2
 #' @importFrom purrr map map2 map_dfr
@@ -51,7 +52,8 @@ saeczi <- function(samp_dat,
                    B = 100L,
                    mse_est = FALSE,
                    estimand = "means",
-                   parallel = FALSE) {
+                   parallel = FALSE,
+                   subsamp_prop = NULL) {
 
   funcCall <- match.call()
 
@@ -66,6 +68,13 @@ saeczi <- function(samp_dat,
 
   if(!(estimand %in% c("means", "totals"))) {
     stop("Invalid estimand, must be either 'means' or 'totals'")
+  }
+  
+  if (!is.null(subsamp_prop)) {
+    pop_dat <- pop_dat |> 
+      group_by(!!rlang::sym(domain_level)) |> 
+      slice_sample(prop = subsamp_prop) |> 
+      ungroup()
   }
 
   Y <- toString(lin_formula[[2]])

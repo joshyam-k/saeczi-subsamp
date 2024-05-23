@@ -44,7 +44,7 @@ samp_by_grp <- function(samp, pop, dom_nm, B) {
     
     out <- pop_ordered[ids, ]
     all_samps[[i]] <- out
-  }
+  } # i
   
   return(all_samps)
   
@@ -309,23 +309,6 @@ boot_rep_par <- function(x,
   return(list(preds = preds_full))
   
 }
-
-
-
-
-#' Sample n rows from a data.frame
-#' 
-#' @param .data The data.frame to sample from
-#' @param n The number of rows to sample
-#' @param replace Logical. Should selected rows be added back to the data.frame for the next row selection?
-#' 
-#' @return A data.frame with n randomly chosen rows
-#' @noRd
-#' 
-slice_samp <- function(.data, n, replace = TRUE) {
-  .data[sample(nrow(.data), n, replace = replace),]
-}
-
 
 #' Extract all matches from a string
 #' 
